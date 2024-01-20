@@ -1,7 +1,13 @@
-const http=require('http')
-const data=require('../utils/data.js')
-http.createServer((req,res)=>{
-    res.writeHead(200,{'content-Type':'app/json'});
-    res.write(JSON.stringify(data)) //convert javascript object to json
-    res.end();
-}).listen(1230);
+const express =require('express');
+const app=express() //to execute 
+
+app.get('',(req,res)=>{
+    console.log(req.query.name)
+    res.send(`hello this is home page ${req.query.name}`) //runs http://localhost:3000/?name=peter
+})
+
+app.get('/about',(req,res)=>{
+    res.send('hello this is about page')
+ })
+ 
+app.listen(2000)
