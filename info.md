@@ -17,8 +17,12 @@
 -to load static files in path given in publicPath <http://localhost:2000/filename.hmtl> if no filename.html then it searches for index.html
 
 >ejs(Embedded JavaScript templating.)-EJS is a simple templating language that lets you generate HTML markup with plain JavaScript. 
+
+<!-- <% 'Scriptlet' tag, for control-flow, no output        
+<%= Outputs the value into the template (HTML escaped) 
+<%- Outputs the unescaped value into the template     -->
 -app.set('view engine','ejs')
--create views folder and put profile.ejs inside 
+-create <views folder> and put profile.ejs inside 
 -app.get('/profile',(_,res)=>{
     const user={
         name:"swayam"
@@ -36,3 +40,28 @@
 
 -filename.ejs -
  -<nav><h1>header</h1></nav>
+
+ >Middleware-Middleware functions are functions that have access to the request object, the response object, and the next function in the application's request-response cycle.Advantages of using middleware: Middleware can process request objects multiple times before the server works for that request. Middleware can be used to add logging and authentication functionality.'
+
+ >types of middleware-
+  1.application-level middleware
+  2.Router-level middleware
+  3.Error-handling middleware
+  4.Built-in middleware
+  5.Third-party middleware
+
+  >In Express, if you define multiple app.get() routes for the same path, the route that is defined first will take precedence. In other words, the order in which you define your routes matters.
+
+  >for router level mdw-
+   - app.get('/help/:id?',reqFilter,reqFilter2,(req,res)=>{  //? means it run for both help/ or help/something
+    res.send('hello this is help page')
+  })
+  
+  *order of middleware and get is important if u have multiple get with same route only top get will render
+  *if u didnt put app.use(middleware) above get it will not implemented 
+  ''
+>const route=express.Router() //use route inplace of app like route.get() and also first define route.use(middleware) to apply middleware to route only not to app
+
+route.use(middleware)
+ app.use(route) or  app.use('/',route) 
+> 'It means that any route or middleware defined within the route router will be accessible under the path specified by app.use(route).'
