@@ -49,6 +49,8 @@
   3.Error-handling middleware
   4.Built-in middleware
   5.Third-party middleware
+  
+ >app.use(middleware) will be applied to all routes even to route.get 
 
   >In Express, if you define multiple app.get() routes for the same path, the route that is defined first will take precedence. In other words, the order in which you define your routes matters.
 
@@ -65,3 +67,90 @@
 route.use(middleware)
  app.use(route) or  app.use('/',route) 
 > 'It means that any route or middleware defined within the route router will be accessible under the path specified by app.use(route).'
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+                                     connecting mongodb (npm i mongodb)
+>const {MongoClient} =require('mongodb')
+const url='mongodb://localhost:27017';
+const client=new MongoClient(url)
+
+async function getData(){
+    let result=await client.connect()
+    let db=result.db('e-com')
+    let collection=db.collection('products');
+    let response=await collection.find({}).toArray();
+    console.log(response);
+}
+getData()
+
+''#If acknowledged is true , it means the MongoDB server has acknowledged the write concern. If false , it means the write concern is not enabled. The MongoDB server will still write data, but there's' no guarantee that data will persist on the disk.
+'
+---------------------------------------------------------------------------------------------------------------------------------------------------
+'
+>inserting data in mongo
+-db=db.collection('products')
+-insert() dont work now
+-const result=await db.insertOne(
+        {name:'note',brand:"viv"})
+-const manydata=await db.insertMany(
+        [{name:'multi1',brand:"viva la trimp"},{name:'multi2',brand:"viva la two"}])
+*if data get inserted (result/manydata.acknowledged==true)
+
+-----------------------------------------------------------------------------updateing data------------------------------------------------------
+
+- let result =await db.updateOne(
+        {name:'multi1' },
+        {$set:{name:'multiUpdate1',more:"values"}}
+        )
+we also have updateMany() as in updateOne only top most matched data is updated 
+-result gives ModifiedCount:0/1/2.. to check if modified
+
+---------------------------------------------------------------------deleting data--------------------------------------------------------------
+let result=await db.deleteOne({name:undefined})
+-similarly we have deleteMany() and it result gives "deletedcount" from which we can check
+if given data is deleted or not 0 means no data deleted 
+'
+>***u should always send res as if not it will never stop ----------------------------------------------------------------------------------
+-'-----------------------------------------------------get api --------------------------------------------------------------------
+ app.get('/',async (req,res)=>{
+    let db=await dbConnection()
+    let data=await db.find({}).toArray()
+    res.send({name:"swayam","data":data})
+
+})
+------------------------------------------------------post api --------------------------------------------------------------------
+                              when using or sending data to post req
+                              use app.use(express.json()) middleware 
+                              to change json send to js object . this middleware automatically
+                              parses the JSON data in the request body and makes it available 
+                              in the req.body object for further processing in your route handlers.
+
+-app.post('/',async (req,res)=>{
+    console.log(req.body) ---->req.body is jsobject but it was json when send from post as it is change by middleware
+    let db=await dbConnection()
+    let result=await db.insertOne(req.body)
+    res.send(result)
+})
+------------------------------------------------------put api --------------------------------------------------------------------
+app.put('/:name?',async (req,res)=>{
+    console.log(req.body)
+    let db=await dbConnection()
+    let result=await db.updateOne({name:req.params.name},{$set:req.body})
+    res.send(result)
+})
+----------------------------------------------------------------delete api data--------------------------------------------
+ 
+app.delete('/:id?',async (req,res)=>{
+    console.log(req.body)
+    let db=await dbConnection()
+    let result=await db.deleteOne({_id:new mongodb.ObjectId(req.params.id)})  //for _id u have to convert it id to object id
+
+    res.send(`<h1>${JSON.stringify(result)}</h1>`) //here we are converting object to json because If you are seeing *[object Object] in your response, it usually indicates that you are trying to concatenate or interpolate an object directly into a string.
+
+    console.log(result)
+})
+-------------------------------------------------------------------------------------------------------------------------------------------------
+>npm i mongoose
+Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js. It manages relationships between data, provides schema validation, and is used to translate between objects in code and the representation of those objects in MongoDB.
+
