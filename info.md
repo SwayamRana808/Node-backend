@@ -154,3 +154,30 @@ app.delete('/:id?',async (req,res)=>{
 >npm i mongoose
 Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js. It manages relationships between data, provides schema validation, and is used to translate between objects in code and the representation of those objects in MongoDB.
 
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ In Mongoose, the find() method returns a Query object. However, when used with await, Mongoose automatically executes the query and returns an array of documents. So, in Mongoose, you don't need to use toArray() explicitly.
+
+ In MongoDb,The find() method returns a cursor, and you need to call toArray() to convert the cursor's results into an array of documents. This is a common pattern when using the official MongoDB driver in a non-Mongoose context.
+
+ -----for read,insert,update,delete -----db/connectMongoose.js and db/mongooseUpdate.js for api-apiPostMongoose 
+ >app.get('/',async(req,res)=>{
+    let data=await read()
+    await read().then((r)=>{console.log(r)}) //you cannot write data.then()
+    res.send(data)
+})
+>for insert only we need schema object to pass in model
+--** but remember if used schema then when u perform find ,or other update etc it only data that follows that schema ---
+--** so it better to use empty schema mongoose.Schema({})-------------------!important
+>use mutliple or condition to find --
+ let data = await Productmodel.find({
+        
+          "$or":[  //any condition satisfies
+            {name:{$regex: namei}},  //matches any string with namei even it includes that part also
+            {price:{$regex:namei}}
+          ]
+        
+      });
+===The Model.create() method of the Mongoose API is used to create single or many documents in the collection. Mongoose by default triggers save() internally when we use the create() method on any model
+---------------------------------------------------------------------------------------------------------------------------------------------------
+>npm i multer
+>Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files. It is written on top of busboy for maximum efficiency.
